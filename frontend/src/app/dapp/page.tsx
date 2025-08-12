@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { type QueryClient, useQuery } from "@tanstack/react-query";
 
 type ContractResult = [string[], string[], number[]];
 
@@ -28,7 +27,6 @@ import {
   SettingsIcon,
   FileSignature,
   Stamp,
-  ChevronRight,
   Copy,
   Check,
   Shield,
@@ -49,7 +47,9 @@ import { useWriteContract, useReadContract } from "wagmi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "@campnetwork/origin/react";
-import { getBalance } from "@campnetwork/origin/react";
+import Image from "next/image";
+import logo from "@/assets/writestamp.png";
+import Link from "next/link";
 
 export default function DappPage() {
   const [content, setContent] = useState("");
@@ -187,16 +187,18 @@ export default function DappPage() {
         <aside className="hidden lg:block">
           <div className="sticky top-6 space-y-6">
             <div className="flex items-center gap-3 rounded-2xl border border-white/60 bg-white/80 p-4 shadow-lg backdrop-blur-xl">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 shadow-lg">
-                <PenTool className="h-5 w-5 text-white" />
-              </div>
+              <Link href="/" className="group flex items-center gap-3">
+                <div className="relative">
+                  <Image src={logo} alt="Logo" width={70} height={70} />
+                </div>
+                <div>
+                  <div className="text-xs font-bold tracking-tight bg-gradient-to-r from-[#121F35] to-[#676f7e] bg-clip-text text-transparent">
+                    Blockchain Registry
+                  </div>
+                </div>
+              </Link>
               <div>
-                <div className="text-base font-bold text-gray-900">
-                  WriteStamp
-                </div>
-                <div className="text-sm text-brand-600 font-medium">
-                  Writing Registry
-                </div>
+                
               </div>
             </div>
 
@@ -489,9 +491,9 @@ export default function DappPage() {
                       <CardTitle className="text-lg font-bold text-gray-900">
                         Welcome, Writer!
                       </CardTitle>
-                      <CardDescription className="text-gray-600">
-                        {/* Connect to sign and register */}
-                      </CardDescription>
+                      {/* <CardDescription className="text-gray-600">
+                        Connect to sign and register
+                      </CardDescription> */}
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <Button
@@ -500,7 +502,6 @@ export default function DappPage() {
                       >
                         {isConnected ? "Connected" : "Connect Wallet"}
                       </Button>
-                     
                     </CardContent>
                   </>
                 ) : (

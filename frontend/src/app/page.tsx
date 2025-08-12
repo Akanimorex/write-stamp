@@ -22,6 +22,8 @@ import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import Link from "next/link"
+import logo from "@/assets/writestamp.png"
+import Image from "next/image"
 
 export default function Page() {
   return (
@@ -77,21 +79,15 @@ function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
       <div className="container mx-auto flex h-20 items-center justify-between px-6">
-        <a href="#" className="group flex items-center gap-3">
+        <Link href="#" className="group flex items-center gap-3">
           <div className="relative">
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 opacity-40 blur-lg transition-all duration-300 group-hover:opacity-60 group-hover:blur-xl" />
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 opacity-60 blur-sm transition-all duration-300 group-hover:opacity-80" />
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-lg">
-              <PenTool className="h-6 w-6" />
-            </div>
+            <Image src={logo} alt="Logo" width={70} height={70} />
           </div>
           <div>
-            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-[#121F35] to-[#676f7e] bg-clip-text text-transparent">
-              WriteStamp
-            </span>
-            <div className="text-xs text-brand-600/70 font-medium">Blockchain Registry</div>
+            
+            <div className="text-xs font-bold tracking-tight bg-gradient-to-r from-[#121F35] to-[#676f7e] bg-clip-text text-transparent">Blockchain Registry</div>
           </div>
-        </a>
+        </Link>
 
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
           <a
@@ -601,7 +597,7 @@ function CalloutCta() {
                 size="lg"
                 className="group bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 text-lg px-8 py-6"
               >
-                <Link href="/app">
+                <Link href="/dapp">
                   Launch WriteStamp
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
