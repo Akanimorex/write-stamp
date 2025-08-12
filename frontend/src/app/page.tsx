@@ -21,7 +21,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 
 
+
+
 export default function Page() {
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-white">
       {/* Global decorative background */}

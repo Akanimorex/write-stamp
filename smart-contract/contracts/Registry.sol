@@ -1,23 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-/**
- *  Writing Registry
- *  A simple on-chain registry for writers to timestamp and prove authorship of text content
- */
+
 contract WritingRegistry {
     struct Submission {
         address author;
         uint256 timestamp;
     }
 
-    // Mapping from content hash to its submission details
-    mapping(bytes32 => Submission) private submissions;
-
-    // Mapping from author address to list of their content hashes
+    mapping(bytes32 => Submission) private submissions;   
     mapping(address => bytes32[]) private authorSubmissions;
 
-    // Event emitted when a new work is registered
     event WorkRegistered(address indexed author, bytes32 indexed contentHash, uint256 timestamp);
 
   
@@ -58,16 +51,23 @@ contract WritingRegistry {
         return (true, entry.author, entry.timestamp);
     }
 
-    /**
-     * @notice Retrieve all content hashes registered by an author
-     * @param authorAddress The address of the author
-     * @return hashes Array of content hashes registered by the author
-     */
+    
     function getSubmissionsByAuthor(address authorAddress)
-        external
-        view
-        returns (bytes32[] memory hashes)
-    {
-        return authorSubmissions[authorAddress];
+    external
+    view
+    returns (bytes32[] memory hashes, address[] memory authors, uint256[] memory timestamps)
+{
+    uint256 count = authorSubmissions[authorAddress].length;
+    hashes = new bytes32[](count);
+    authors = new address[](count);
+    timestamps = new uint256[](count);
+
+    for (uint256 i = 0; i < count; i++) {
+        bytes32 hash = authorSubmissions[authorAddress][i];
+        Submission memory sub = submissions[hash];
+        hashes[i] = hash;
+        authors[i] = sub.author;
+        timestamps[i] = sub.timestamp;
     }
+}
 }
