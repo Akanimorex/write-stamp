@@ -153,7 +153,7 @@ export default function DappPage() {
           toast.info("❌ This hash is NOT registered");
         }
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       toast.error("Error checking hash");
     }
