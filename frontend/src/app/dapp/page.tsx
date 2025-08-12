@@ -269,7 +269,7 @@ export default function DappPage() {
                       </CardTitle>
                       <CardDescription className="text-gray-600 mt-1">
                         Hash, title, and optional URI. Keep content
-                        private—register only the hash.
+                        private, register only the hash.
                       </CardDescription>
                     </div>
                   </div>
@@ -313,7 +313,7 @@ export default function DappPage() {
                       </Label>
                       <Input
                         id="uri"
-                        placeholder="ipfs://... or https://..."
+                        placeholder="ipfs://... , optional "
                         className="border-brand-200/50 bg-white/80 focus:border-brand-400 focus:ring-brand-200 transition-all duration-200"
                         onChange={(e) => setUri(e.target.value)}
                       />

@@ -61,9 +61,9 @@ export default function Page() {
         <HowItWorks />
       </section>
 
-      <section className="container mx-auto px-6 py-12">
+      {/* <section className="container mx-auto px-6 py-12">
         <StatsStrip />
-      </section>
+      </section> */}
 
       <section id="faq" className="container mx-auto px-6 py-20 md:py-32">
         <FAQ />
@@ -109,7 +109,9 @@ function Header() {
             variant="outline"
             className="hidden sm:inline-flex bg-white/80 backdrop-blur border-brand-200 hover:bg-brand-50 hover:border-brand-300 transition-all duration-200"
           >
+            <Link target="_blank" href="https://github.com/Akanimorex/write-stamp">
             Documentation
+            </Link>
           </Button>
           <Button
             asChild
@@ -542,7 +544,7 @@ function FAQ() {
     },
     {
       q: "Which blockchain networks are supported?",
-      a: "Any EVM-compatible chain works: Ethereum mainnet, Polygon, Arbitrum, Optimism, and many L2s. Choose based on your cost and speed preferences.",
+      a: "Only Basecamp Testnet at the moment.",
     },
     {
       q: "Can I add metadata to my registration?",
@@ -607,7 +609,9 @@ function CalloutCta() {
                 size="lg"
                 className="border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:text-white backdrop-blur text-lg px-8 py-6"
               >
+                <Link target="_blank" href="https://github.com/Akanimorex/write-stamp">
                 View Documentation
+                </Link>
               </Button>
             </div>
           </div>
@@ -677,11 +681,11 @@ function Footer() {
                   How it works
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className="hover:text-brand-700 transition-colors">
                   Pricing
                 </a>
-              </li>
+              </li> */}
               <li>
                 <a href="#" className="hover:text-brand-700 transition-colors">
                   API
@@ -694,7 +698,7 @@ function Footer() {
             <h4 className="font-semibold text-slate-900">Support</h4>
             <ul className="mt-4 space-y-2 text-sm text-slate-600">
               <li>
-                <a href="#" className="hover:text-brand-700 transition-colors">
+                <a href="https://github.com/Akanimorex/write-stamp" target="_blank" className="hover:text-brand-700 transition-colors">
                   Documentation
                 </a>
               </li>
