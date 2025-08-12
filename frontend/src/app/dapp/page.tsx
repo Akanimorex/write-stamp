@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { type QueryClient, useQuery } from '@tanstack/react-query';
+import { type QueryClient, useQuery } from "@tanstack/react-query";
 
 type ContractResult = [string[], string[], number[]];
 
@@ -30,9 +30,10 @@ import {
   Stamp,
   ChevronRight,
   Copy,
+  Check,
   Shield,
   Hash,
-  Clock
+  Clock,
 } from "lucide-react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
@@ -47,39 +48,54 @@ import {
 import { useWriteContract, useReadContract } from "wagmi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "@campnetwork/origin/react";
+import { getBalance } from "@campnetwork/origin/react";
 
 export default function DappPage() {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [uri, setUri] = useState("");
   const [hash, setHash] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [checkHash, setCheckHash] = useState("");
 
   const { openModal: openCampModal } = useCampModal();
-  const [provider, setProvider] = React.useState<any>(null);
-  const [sectionIndex, setSectionIndex] = React.useState(0);
   const { disconnect } = useConnect();
   const { address, isConnected } = useAccount();
+  const { isAuthenticated } = useAuth();
   const contractAddress = "0x843E3ffaf094294a520690cBe4dD5aC123851b92";
 
   const { writeContractAsync, isPending, error } = useWriteContract();
 
-  const { data: submissions, isLoading, error: readError } = useReadContract({
+  const {
+    data: submissions,
+    isLoading,
+    error: readError,
+  } = useReadContract({
     address: contractAddress,
     abi: abi,
-    functionName: 'getDetailedSubmissionsByAuthor',
+    functionName: "getDetailedSubmissionsByAuthor",
     args: address ? [address] : undefined,
     query: {
       enabled: Boolean(address),
     },
-  }) as { data: ContractResult | undefined; isLoading: boolean; error: unknown };
+  }) as {
+    data: ContractResult | undefined;
+    isLoading: boolean;
+    error: unknown;
+  };
 
   console.log("Submissions:", submissions);
 
-  const submissionList = submissions ? submissions[0].map((hash: string, idx: number) => ({
-    hash,
-    author: submissions[1][idx],
-    timestamp: new Date(Number(submissions[2][idx]) * 1000).toLocaleString(),
-  })) : [];
+  const submissionList = submissions
+    ? submissions[0].map((hash: string, idx: number) => ({
+        hash,
+        author: submissions[1][idx],
+        timestamp: new Date(
+          Number(submissions[2][idx]) * 1000
+        ).toLocaleString(),
+      }))
+    : [];
 
   const registerArticle = async () => {
     try {
@@ -91,7 +107,10 @@ export default function DappPage() {
         alert("Please connect your wallet first");
         return;
       }
-
+      if (!isAuthenticated) {
+        alert("Please authenticate first");
+        return;
+      }
       const hashValue = keccak256(toUtf8Bytes(content));
       setHash(hashValue);
       console.log("Generated hash:", hashValue);
@@ -110,6 +129,46 @@ export default function DappPage() {
       console.error(err);
       alert(`Error: ${err}`);
       toast.error(`Error: ${err}`);
+    }
+  };
+
+  const copyHash = () => {
+    console.log("copy");
+    navigator.clipboard.writeText(hash);
+    toast.success("Hash copied to clipboard");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const { data: isRegistered, refetch: refetchHashStatus } = useReadContract({
+    address: contractAddress,
+    abi: abi,
+    functionName: "checkIfRegistered",
+    args: checkHash ? [checkHash] : undefined,
+    query: {
+      enabled: false,
+    },
+  });
+
+  const handleCheckHash = async () => {
+    if (!checkHash.trim()) {
+      toast.error("Enter a hash to check");
+      return;
+    }
+    try {
+      const { data } = await refetchHashStatus();
+      if (data) {
+        const hashStatus = data as [boolean];
+        if (hashStatus[0]) {
+          console.log(data, "checkdata");
+          toast.success("✅ This hash is already registered");
+        } else {
+          toast.info("❌ This hash is NOT registered");
+        }
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Error checking hash");
     }
   };
 
@@ -132,24 +191,42 @@ export default function DappPage() {
                 <PenTool className="h-5 w-5 text-white" />
               </div>
               <div>
-                <div className="text-base font-bold text-gray-900">WriteStamp</div>
-                <div className="text-sm text-brand-600 font-medium">Writing Registry</div>
+                <div className="text-base font-bold text-gray-900">
+                  WriteStamp
+                </div>
+                <div className="text-sm text-brand-600 font-medium">
+                  Writing Registry
+                </div>
               </div>
             </div>
 
             <nav className="space-y-2">
-              <SideLink icon={<FileSignature className="h-4 w-4" />} label="Register" active />
+              <SideLink
+                icon={<FileSignature className="h-4 w-4" />}
+                label="Register"
+                active
+              />
               <SideLink icon={<Search className="h-4 w-4" />} label="Verify" />
-              <SideLink icon={<Users className="h-4 w-4" />} label="Author submissions" />
-              <SideLink icon={<SettingsIcon className="h-4 w-4" />} label="Settings" />
+              <SideLink
+                icon={<Users className="h-4 w-4" />}
+                label="Author submissions"
+              />
+              <SideLink
+                icon={<SettingsIcon className="h-4 w-4" />}
+                label="Settings"
+              />
             </nav>
 
             <div className="rounded-2xl border border-white/60 bg-white/80 p-5 shadow-lg backdrop-blur-xl">
               <div className="flex items-center gap-2 mb-3">
                 <Shield className="h-4 w-4 text-brand-600" />
-                <div className="text-sm font-semibold text-gray-900">Network</div>
+                <div className="text-sm font-semibold text-gray-900">
+                  Network
+                </div>
               </div>
-              <div className="mb-4 text-xs text-gray-600">Choose your preferred chain</div>
+              <div className="mb-4 text-xs text-gray-600">
+                Choose your preferred chain
+              </div>
               <div className="grid gap-3">
                 <Button
                   variant="outline"
@@ -178,7 +255,9 @@ export default function DappPage() {
                 <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-brand-700 bg-clip-text text-transparent">
                   Writing Registry
                 </h1>
-                <p className="text-sm text-gray-600 mt-1">Secure your intellectual property on the blockchain</p>
+                <p className="text-sm text-gray-600 mt-1">
+                  Secure your intellectual property on the blockchain
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <ConnectButton />
@@ -196,16 +275,22 @@ export default function DappPage() {
                       <FileSignature className="h-5 w-5 text-brand-600" />
                     </div>
                     <div className="flex-1">
-                      <CardTitle className="text-xl font-bold text-gray-900">Register new work</CardTitle>
+                      <CardTitle className="text-xl font-bold text-gray-900">
+                        Register new work
+                      </CardTitle>
                       <CardDescription className="text-gray-600 mt-1">
-                        Hash, title, and optional URI. Keep content private—register only the hash.
+                        Hash, title, and optional URI. Keep content
+                        private—register only the hash.
                       </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-3">
-                    <Label htmlFor="content" className="text-sm font-semibold text-gray-700">
+                    <Label
+                      htmlFor="content"
+                      className="text-sm font-semibold text-gray-700"
+                    >
                       Your content
                     </Label>
                     <Textarea
@@ -217,7 +302,10 @@ export default function DappPage() {
                   </div>
                   <div className="grid gap-6 sm:grid-cols-2">
                     <div className="space-y-3">
-                      <Label htmlFor="title" className="text-sm font-semibold text-gray-700">
+                      <Label
+                        htmlFor="title"
+                        className="text-sm font-semibold text-gray-700"
+                      >
                         Title
                       </Label>
                       <Input
@@ -228,7 +316,10 @@ export default function DappPage() {
                       />
                     </div>
                     <div className="space-y-3">
-                      <Label htmlFor="uri" className="text-sm font-semibold text-gray-700">
+                      <Label
+                        htmlFor="uri"
+                        className="text-sm font-semibold text-gray-700"
+                      >
                         URI
                       </Label>
                       <Input
@@ -243,7 +334,11 @@ export default function DappPage() {
                     <Button
                       onClick={registerArticle}
                       disabled={isPending}
-                      className={isPending ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-brand-600 hover:bg-brand-700"}
+                      className={
+                        isPending
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : "bg-[#121F35] hover:bg-[#121F35]/80 transition-all duration-200 text-white"
+                      }
                     >
                       {isPending ? "Registering..." : "Register"}
                     </Button>
@@ -266,14 +361,24 @@ export default function DappPage() {
                         value={hash}
                         readOnly
                       />
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="shrink-0 border-brand-200 hover:bg-brand-50 bg-transparent"
-                        onClick={() => navigator.clipboard.writeText(hash)}
-                      >
-                        <Copy className="h-3 w-3" />
-                      </Button>
+                      {copied ? (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="shrink-0 border-brand-200 hover:bg-brand-50 bg-transparent"
+                        >
+                          <Check className="h-3 w-3" />
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="shrink-0 border-brand-200 hover:bg-brand-50 bg-transparent"
+                          onClick={copyHash}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -286,9 +391,12 @@ export default function DappPage() {
                       <Stamp className="h-5 w-5 text-brand-600" />
                     </div>
                     <div className="flex-1">
-                      <CardTitle className="text-xl font-bold text-gray-900">Verify by content hash</CardTitle>
+                      <CardTitle className="text-xl font-bold text-gray-900">
+                        Verify by content hash
+                      </CardTitle>
                       <CardDescription className="text-gray-600 mt-1">
-                        Check registration status using a 0x-prefixed keccak256 hash.
+                        Check registration status using a 0x-prefixed keccak256
+                        hash.
                       </CardDescription>
                     </div>
                   </div>
@@ -296,10 +404,15 @@ export default function DappPage() {
                 <CardContent className="grid gap-4 sm:grid-cols-[1fr_auto]">
                   <Input
                     placeholder="0x..."
+                    value={checkHash}
+                    onChange={(e) => setCheckHash(e.target.value)}
                     className="border-brand-200/50 bg-white/80 focus:border-brand-400 focus:ring-brand-200 font-mono transition-all duration-200"
                   />
-                  <Button disabled className="bg-gray-300 text-gray-500 cursor-not-allowed">
-                    Check (disabled)
+                  <Button
+                    onClick={handleCheckHash}
+                    className="bg-[#121F35] hover:bg-[#121F35]/80 transition-all duration-200 text-white"
+                  >
+                    Check
                   </Button>
                 </CardContent>
               </Card>
@@ -311,8 +424,12 @@ export default function DappPage() {
                       <Users className="h-5 w-5 text-brand-600" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl font-bold text-gray-900">Author submissions</CardTitle>
-                      <CardDescription className="text-gray-600 mt-1">Browse works by wallet address</CardDescription>
+                      <CardTitle className="text-xl font-bold text-gray-900">
+                        Author submissions
+                      </CardTitle>
+                      <CardDescription className="text-gray-600 mt-1">
+                        Browse works by wallet address
+                      </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -340,16 +457,24 @@ export default function DappPage() {
                           <div className="truncate font-mono text-brand-700 bg-brand-50 px-2 py-1 rounded text-xs">
                             {submission.hash}
                           </div>
-                          <div className="truncate font-medium">{title || "Untitled"}</div>
-                          <div className="truncate text-brand-600">{uri || "N/A"}</div>
+                          <div className="truncate font-medium">
+                            {title || "Untitled"}
+                          </div>
+                          <div className="truncate text-brand-600">
+                            {uri || "N/A"}
+                          </div>
                           <div className="truncate font-mono text-xs bg-gray-100 px-2 py-1 rounded">
                             {submission.author}
                           </div>
-                          <div className="truncate text-gray-600">{submission.timestamp}</div>
+                          <div className="truncate text-gray-600">
+                            {submission.timestamp}
+                          </div>
                         </div>
                       ))
                     ) : (
-                      <div className="py-4 text-sm text-gray-600">No submissions found.</div>
+                      <div className="py-4 text-sm text-gray-600">
+                        No submissions found.
+                      </div>
                     )}
                   </div>
                 </CardContent>
@@ -358,51 +483,72 @@ export default function DappPage() {
 
             <div className="space-y-6">
               <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-bold text-gray-900">Wallet</CardTitle>
-                  <CardDescription className="text-gray-600">Connect to sign and register</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Button disabled className="w-full bg-gray-300 text-gray-500 cursor-not-allowed">
-                    Connect Wallet (disabled)
-                  </Button>
-                  <div className="rounded-xl border border-brand-200/50 bg-gradient-to-br from-brand-50/50 to-white/80 p-4 text-sm text-gray-600">
-                    Wallet details will appear here after connecting.
-                  </div>
-                </CardContent>
+                {isAuthenticated ? (
+                  <>
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-lg font-bold text-gray-900">
+                        Welcome, Writer!
+                      </CardTitle>
+                      <CardDescription className="text-gray-600">
+                        {/* Connect to sign and register */}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <Button
+                        disabled
+                        className="w-full bg-gray-300 text-gray-500 cursor-not-allowed"
+                      >
+                        {isConnected ? "Connected" : "Connect Wallet"}
+                      </Button>
+                     
+                    </CardContent>
+                  </>
+                ) : (
+                  <>
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-lg font-bold text-gray-900">
+                        Wallet
+                      </CardTitle>
+                      <CardDescription className="text-gray-600">
+                        Connect to sign and register
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <Button
+                        disabled
+                        className="w-full bg-gray-300 text-gray-500 cursor-not-allowed"
+                      >
+                        {isConnected ? "Connected" : "Connect Wallet"}
+                      </Button>
+                      <div className="rounded-xl border border-brand-200/50 bg-gradient-to-br from-brand-50/50 to-white/80 p-4 text-sm text-gray-600">
+                        Wallet details will appear here after connecting.
+                      </div>
+                    </CardContent>
+                  </>
+                )}
               </Card>
 
               <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-bold text-gray-900">Network</CardTitle>
-                  <CardDescription className="text-gray-600">Switch RPC/network</CardDescription>
+                  <CardTitle className="text-lg font-bold text-gray-900">
+                    Network
+                  </CardTitle>
+                  <CardDescription className="text-gray-600">
+                    Switch RPC/network
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-3">
                   <Button
                     variant="outline"
                     className="justify-start bg-white/70 border-brand-200/50 hover:bg-brand-50 transition-all duration-200"
                   >
-                    <div className="w-2 h-2 rounded-full bg-blue-500 mr-2"></div>
-                    Ethereum
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="justify-start bg-white/70 border-brand-200/50 hover:bg-brand-50 transition-all duration-200"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-purple-500 mr-2"></div>
-                    Layer 2
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="justify-start bg-white/70 border-brand-200/50 hover:bg-brand-50 transition-all duration-200"
-                  >
                     <div className="w-2 h-2 rounded-full bg-orange-500 mr-2"></div>
-                    Testnet
+                    Basecamp Testnet
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
+              {/* <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-bold text-gray-900">Recent activity</CardTitle>
                   <CardDescription className="text-gray-600">Latest transactions</CardDescription>
@@ -421,7 +567,7 @@ export default function DappPage() {
                     <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">1h</span>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </div>
         </section>
@@ -430,7 +576,15 @@ export default function DappPage() {
   );
 }
 
-function SideLink({ icon, label, active = false }: { icon: React.ReactNode; label: string; active?: boolean }) {
+function SideLink({
+  icon,
+  label,
+  active = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+}) {
   return (
     <button
       type="button"
@@ -441,7 +595,9 @@ function SideLink({ icon, label, active = false }: { icon: React.ReactNode; labe
           : "border-white/60 bg-white/80 hover:bg-brand-50 hover:border-brand-200 shadow-sm hover:shadow-md",
       ].join(" ")}
     >
-      <span className={active ? "text-brand-600" : "text-gray-600"}>{icon}</span>
+      <span className={active ? "text-brand-600" : "text-gray-600"}>
+        {icon}
+      </span>
       <span>{label}</span>
     </button>
   );
