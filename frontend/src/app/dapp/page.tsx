@@ -1,5 +1,15 @@
 "use client";
 import React from "react";
+import { type QueryClient, useQuery } from '@tanstack/react-query';
+
+type ContractResult = [string[], string[], number[]];
+
+interface QueryResult {
+  data: ContractResult | undefined;
+  isLoading: boolean;
+  error: unknown;
+}
+
 import {
   Card,
   CardContent,
@@ -20,6 +30,9 @@ import {
   Stamp,
   ChevronRight,
   Copy,
+  Shield,
+  Hash,
+  Clock
 } from "lucide-react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
@@ -31,7 +44,7 @@ import {
   useModal as useCampModal,
   useConnect,
 } from "@campnetwork/origin/react";
-import { useWriteContract,useReadContract } from "wagmi";
+import { useWriteContract, useReadContract } from "wagmi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -53,12 +66,20 @@ export default function DappPage() {
   const { data: submissions, isLoading, error: readError } = useReadContract({
     address: contractAddress,
     abi: abi,
-    functionName: 'getSubmissionsByAuthor',
-    args: address ? [address] : undefined, // Only run if wallet is connected
+    functionName: 'getDetailedSubmissionsByAuthor',
+    args: address ? [address] : undefined,
     query: {
       enabled: Boolean(address),
     },
-  });
+  }) as { data: ContractResult | undefined; isLoading: boolean; error: unknown };
+
+  console.log("Submissions:", submissions);
+
+  const submissionList = submissions ? submissions[0].map((hash: string, idx: number) => ({
+    hash,
+    author: submissions[1][idx],
+    timestamp: new Date(Number(submissions[2][idx]) * 1000).toLocaleString(),
+  })) : [];
 
   const registerArticle = async () => {
     try {
@@ -78,7 +99,7 @@ export default function DappPage() {
       const txHash = await writeContractAsync({
         address: contractAddress,
         abi: abi,
-        functionName: "registerWork", // change if your contract uses a different name
+        functionName: "registerWork",
         args: [hashValue],
       });
 
@@ -93,65 +114,55 @@ export default function DappPage() {
   };
 
   return (
-    <main className="relative min-h-screen bg-white">
+    <main className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-brand-50/30">
       <ToastContainer />
-      {/* Decorative backdrop */}
+      {/* Enhanced decorative backdrop */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-[-18rem] -z-10 h-[38rem] w-[78rem] -translate-x-1/2 rounded-full bg-gradient-to-tr from-brand-400/25 via-brand-300/20 to-brand-600/25 blur-3xl" />
-        <div className="absolute inset-0 [background:linear-gradient(to_right,rgba(2,132,199,0.10)_1px,transparent_1px),linear-gradient(to_bottom,rgba(2,132,199,0.10)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(80%_60%_at_50%_20%,black,transparent)]" />
+        <div className="absolute left-1/2 top-[-18rem] -z-10 h-[38rem] w-[78rem] -translate-x-1/2 rounded-full bg-gradient-to-tr from-brand-400/30 via-brand-300/25 to-brand-600/35 blur-3xl" />
+        <div className="absolute right-0 top-1/4 -z-10 h-[24rem] w-[24rem] rounded-full bg-gradient-to-bl from-brand-200/40 to-brand-400/20 blur-2xl" />
+        <div className="absolute inset-0 [background:linear-gradient(to_right,rgba(2,132,199,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(2,132,199,0.08)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(80%_60%_at_50%_20%,black,transparent)]" />
       </div>
 
-      <div className="container mx-auto grid min-h-screen grid-cols-1 gap-6 px-6 py-6 lg:grid-cols-[240px_1fr]">
-        {/* Sidebar */}
+      <div className="container mx-auto grid min-h-screen grid-cols-1 gap-8 px-6 py-6 lg:grid-cols-[280px_1fr]">
+        {/* Enhanced Sidebar */}
         <aside className="hidden lg:block">
-          <div className="sticky top-6 space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-gradient-to-br from-brand-500 to-brand-700 text-white">
-                <PenTool className="h-4 w-4" />
+          <div className="sticky top-6 space-y-6">
+            <div className="flex items-center gap-3 rounded-2xl border border-white/60 bg-white/80 p-4 shadow-lg backdrop-blur-xl">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 shadow-lg">
+                <PenTool className="h-5 w-5 text-white" />
               </div>
               <div>
-                <div className="text-sm font-semibold leading-tight">
-                  WriteStamp
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Writing Registry
-                </div>
+                <div className="text-base font-bold text-gray-900">WriteStamp</div>
+                <div className="text-sm text-brand-600 font-medium">Writing Registry</div>
               </div>
             </div>
 
-            <nav className="space-y-1">
-              <SideLink
-                icon={<FileSignature className="h-4 w-4" />}
-                label="Register"
-                active
-              />
+            <nav className="space-y-2">
+              <SideLink icon={<FileSignature className="h-4 w-4" />} label="Register" active />
               <SideLink icon={<Search className="h-4 w-4" />} label="Verify" />
-              <SideLink
-                icon={<Users className="h-4 w-4" />}
-                label="Author submissions"
-              />
-              <SideLink
-                icon={<SettingsIcon className="h-4 w-4" />}
-                label="Settings"
-              />
+              <SideLink icon={<Users className="h-4 w-4" />} label="Author submissions" />
+              <SideLink icon={<SettingsIcon className="h-4 w-4" />} label="Settings" />
             </nav>
 
-            <div className="rounded-xl border bg-white/70 p-4 backdrop-blur">
-              <div className="text-sm font-medium">Network</div>
-              <div className="mt-1 text-xs text-muted-foreground">
-                Choose your preferred chain
+            <div className="rounded-2xl border border-white/60 bg-white/80 p-5 shadow-lg backdrop-blur-xl">
+              <div className="flex items-center gap-2 mb-3">
+                <Shield className="h-4 w-4 text-brand-600" />
+                <div className="text-sm font-semibold text-gray-900">Network</div>
               </div>
-              <div className="mt-3 grid gap-2">
+              <div className="mb-4 text-xs text-gray-600">Choose your preferred chain</div>
+              <div className="grid gap-3">
                 <Button
                   variant="outline"
-                  className="justify-start bg-transparent"
+                  className="justify-start bg-white/70 border-brand-200/50 hover:bg-brand-50 hover:border-brand-300 transition-all duration-200"
                 >
+                  <div className="w-2 h-2 rounded-full bg-orange-400 mr-2"></div>
                   Mainnet (coming soon)
                 </Button>
                 <Button
                   variant="outline"
-                  className="justify-start bg-transparent"
+                  className="justify-start bg-gradient-to-r from-brand-50 to-brand-100 border-brand-300 text-brand-700 hover:from-brand-100 hover:to-brand-200 transition-all duration-200"
                 >
+                  <div className="w-2 h-2 rounded-full bg-green-400 mr-2"></div>
                   L2 (recommended)
                 </Button>
               </div>
@@ -159,213 +170,255 @@ export default function DappPage() {
           </div>
         </aside>
 
-        {/* Main */}
+        {/* Enhanced Main Content */}
         <section className="pb-10">
-          {/* Topbar */}
-          <div className="sticky top-0 z-30 mb-6 -mx-6 border-b bg-white/70 px-6 py-4 backdrop-blur">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="sticky top-0 z-30 mb-8 -mx-6 border-b border-white/40 bg-white/80 px-6 py-5 backdrop-blur-xl shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h1 className="text-xl font-semibold tracking-tight">
+                <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-brand-700 bg-clip-text text-transparent">
                   Writing Registry
                 </h1>
-                <p className="text-sm text-muted-foreground">
-                  Sea-blue themed UI · No wallet or contract yet
-                </p>
+                <p className="text-sm text-gray-600 mt-1">Secure your intellectual property on the blockchain</p>
               </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline">Docs</Button>
+              <div className="flex items-center gap-3">
                 <ConnectButton />
                 <CampModal />
               </div>
             </div>
           </div>
 
-          {/* Content grid */}
-          <div className="grid gap-6 lg:grid-cols-3">
-            <div className="space-y-6 lg:col-span-2">
-              {/* Register card (UI only) */}
-              <Card className="bg-white/70 backdrop-blur">
-                <CardHeader>
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-md border bg-white/80 p-2">
-                      <FileSignature className="h-4 w-4 text-brand-600" />
+          <div className="grid gap-8 lg:grid-cols-3">
+            <div className="space-y-8 lg:col-span-2">
+              <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
+                <CardHeader className="pb-4">
+                  <div className="flex items-start gap-4">
+                    <div className="rounded-xl border border-brand-200/50 bg-gradient-to-br from-brand-50 to-brand-100 p-3 shadow-sm">
+                      <FileSignature className="h-5 w-5 text-brand-600" />
                     </div>
-                    <div>
-                      <CardTitle>Register new work</CardTitle>
-                      <CardDescription>
-                        Hash, title, and optional URI. Keep content
-                        private—register only the hash.
+                    <div className="flex-1">
+                      <CardTitle className="text-xl font-bold text-gray-900">Register new work</CardTitle>
+                      <CardDescription className="text-gray-600 mt-1">
+                        Hash, title, and optional URI. Keep content private—register only the hash.
                       </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="content">Your content</Label>
+                <CardContent className="space-y-6">
+                  <div className="space-y-3">
+                    <Label htmlFor="content" className="text-sm font-semibold text-gray-700">
+                      Your content
+                    </Label>
                     <Textarea
                       id="content"
-                      placeholder="Paste your text. In production, we’ll hash it locally."
-                      className="min-h-[140px] resize-vertical"
+                      placeholder="Paste your text. In production, we'll hash it locally."
+                      className="min-h-[160px] resize-vertical border-brand-200/50 bg-white/80 focus:border-brand-400 focus:ring-brand-200 transition-all duration-200"
                       onChange={(e) => setContent(e.target.value)}
                     />
                   </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="title">Title</Label>
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <div className="space-y-3">
+                      <Label htmlFor="title" className="text-sm font-semibold text-gray-700">
+                        Title
+                      </Label>
                       <Input
                         id="title"
                         placeholder="e.g., Ode to Permanence"
+                        className="border-brand-200/50 bg-white/80 focus:border-brand-400 focus:ring-brand-200 transition-all duration-200"
                         onChange={(e) => setTitle(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="uri">URI</Label>
+                    <div className="space-y-3">
+                      <Label htmlFor="uri" className="text-sm font-semibold text-gray-700">
+                        URI
+                      </Label>
                       <Input
                         id="uri"
                         placeholder="ipfs://... or https://..."
+                        className="border-brand-200/50 bg-white/80 focus:border-brand-400 focus:ring-brand-200 transition-all duration-200"
                         onChange={(e) => setUri(e.target.value)}
                       />
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button onClick={registerArticle}>Register</Button>
-                    <Button variant="outline">Clear</Button>
-                    {/* <div>in</div> */}
-                    <Input placeholder="hash" value={hash} readOnly />
-                    <Copy />
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    <Button
+                      onClick={registerArticle}
+                      disabled={isPending}
+                      className={isPending ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-brand-600 hover:bg-brand-700"}
+                    >
+                      {isPending ? "Registering..." : "Register"}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="border-brand-200 hover:bg-brand-50 transition-all duration-200 bg-transparent"
+                      onClick={() => {
+                        setContent("");
+                        setTitle("");
+                        setUri("");
+                        setHash("");
+                      }}
+                    >
+                      Clear
+                    </Button>
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <Input
+                        placeholder="Generated hash will appear here"
+                        className="border-brand-200/50 bg-brand-50/50 text-xs font-mono"
+                        value={hash}
+                        readOnly
+                      />
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="shrink-0 border-brand-200 hover:bg-brand-50 bg-transparent"
+                        onClick={() => navigator.clipboard.writeText(hash)}
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Verify card (UI only) */}
-              <Card className="bg-white/70 backdrop-blur">
-                <CardHeader>
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-md border bg-white/80 p-2">
-                      <Stamp className="h-4 w-4 text-brand-600" />
+              <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
+                <CardHeader className="pb-4">
+                  <div className="flex items-start gap-4">
+                    <div className="rounded-xl border border-brand-200/50 bg-gradient-to-br from-brand-50 to-brand-100 p-3 shadow-sm">
+                      <Stamp className="h-5 w-5 text-brand-600" />
                     </div>
-                    <div>
-                      <CardTitle>Verify by content hash</CardTitle>
-                      <CardDescription>
-                        Check registration status using a 0x-prefixed keccak256
-                        hash.
+                    <div className="flex-1">
+                      <CardTitle className="text-xl font-bold text-gray-900">Verify by content hash</CardTitle>
+                      <CardDescription className="text-gray-600 mt-1">
+                        Check registration status using a 0x-prefixed keccak256 hash.
                       </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="grid gap-4 sm:grid-cols-[1fr_auto]">
-                  <Input placeholder="0x..." />
-                  <Button disabled>Check (disabled)</Button>
+                  <Input
+                    placeholder="0x..."
+                    className="border-brand-200/50 bg-white/80 focus:border-brand-400 focus:ring-brand-200 font-mono transition-all duration-200"
+                  />
+                  <Button disabled className="bg-gray-300 text-gray-500 cursor-not-allowed">
+                    Check (disabled)
+                  </Button>
                 </CardContent>
               </Card>
 
-              {/* Author submissions (placeholder table) */}
-              <Card className="bg-white/70 backdrop-blur">
-                <CardHeader>
-                  <CardTitle>Author submissions</CardTitle>
-                  <CardDescription>
-                    Browse works by wallet address (UI only)
-                  </CardDescription>
+              <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-xl border border-brand-200/50 bg-gradient-to-br from-brand-50 to-brand-100 p-3 shadow-sm">
+                      <Users className="h-5 w-5 text-brand-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl font-bold text-gray-900">Author submissions</CardTitle>
+                      <CardDescription className="text-gray-600 mt-1">Browse works by wallet address</CardDescription>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent className="overflow-x-auto">
                   <div className="min-w-[560px]">
-                    <div className="grid grid-cols-5 gap-2 border-b pb-2 text-xs font-medium text-muted-foreground">
-                      <div>Hash</div>
+                    <div className="grid grid-cols-5 gap-4 border-b border-brand-100 pb-3 text-sm font-semibold text-gray-700">
+                      <div className="flex items-center gap-2">
+                        <Hash className="h-3 w-3" />
+                        Hash
+                      </div>
                       <div>Title</div>
                       <div>URI</div>
                       <div>Author</div>
-                      <div>Timestamp</div>
-                    </div>
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="grid grid-cols-5 gap-2 py-3 text-xs"
-                      >
-                        <div className="truncate font-mono">
-                          0xabcdef...{i}c
-                        </div>
-                        <div className="truncate">Sample Title {i}</div>
-                        <div className="truncate">ipfs://bafy...{i}</div>
-                        <div className="truncate">0x1234...56{i}</div>
-                        <div className="truncate">2025-08-01 12:34</div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-3 w-3" />
+                        Timestamp
                       </div>
-                    ))}
+                    </div>
+                    {submissionList.length > 0 ? (
+                      submissionList.map((submission, idx) => (
+                        <div
+                          key={idx}
+                          className="grid grid-cols-5 gap-4 py-4 text-sm border-b border-gray-100 last:border-0 hover:bg-brand-50/30 transition-colors duration-200"
+                        >
+                          <div className="truncate font-mono text-brand-700 bg-brand-50 px-2 py-1 rounded text-xs">
+                            {submission.hash}
+                          </div>
+                          <div className="truncate font-medium">{title || "Untitled"}</div>
+                          <div className="truncate text-brand-600">{uri || "N/A"}</div>
+                          <div className="truncate font-mono text-xs bg-gray-100 px-2 py-1 rounded">
+                            {submission.author}
+                          </div>
+                          <div className="truncate text-gray-600">{submission.timestamp}</div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="py-4 text-sm text-gray-600">No submissions found.</div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Right rail */}
             <div className="space-y-6">
-              <Card className="bg-white/70 backdrop-blur">
-                <CardHeader>
-                  <CardTitle>Wallet</CardTitle>
-                  <CardDescription>
-                    Connect to sign and register (coming soon)
-                  </CardDescription>
+              <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-bold text-gray-900">Wallet</CardTitle>
+                  <CardDescription className="text-gray-600">Connect to sign and register</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button disabled className="w-full">
+                <CardContent className="space-y-4">
+                  <Button disabled className="w-full bg-gray-300 text-gray-500 cursor-not-allowed">
                     Connect Wallet (disabled)
                   </Button>
-                  <div className="rounded-md border bg-white/60 p-3 text-xs text-muted-foreground">
+                  <div className="rounded-xl border border-brand-200/50 bg-gradient-to-br from-brand-50/50 to-white/80 p-4 text-sm text-gray-600">
                     Wallet details will appear here after connecting.
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/70 backdrop-blur">
-                <CardHeader>
-                  <CardTitle>Network</CardTitle>
-                  <CardDescription>
-                    Switch RPC/network (UI only)
-                  </CardDescription>
+              <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-bold text-gray-900">Network</CardTitle>
+                  <CardDescription className="text-gray-600">Switch RPC/network</CardDescription>
                 </CardHeader>
-                <CardContent className="grid gap-2">
+                <CardContent className="grid gap-3">
                   <Button
                     variant="outline"
-                    className="justify-start bg-transparent"
+                    className="justify-start bg-white/70 border-brand-200/50 hover:bg-brand-50 transition-all duration-200"
                   >
+                    <div className="w-2 h-2 rounded-full bg-blue-500 mr-2"></div>
                     Ethereum
                   </Button>
                   <Button
                     variant="outline"
-                    className="justify-start bg-transparent"
+                    className="justify-start bg-white/70 border-brand-200/50 hover:bg-brand-50 transition-all duration-200"
                   >
+                    <div className="w-2 h-2 rounded-full bg-purple-500 mr-2"></div>
                     Layer 2
                   </Button>
                   <Button
                     variant="outline"
-                    className="justify-start bg-transparent"
+                    className="justify-start bg-white/70 border-brand-200/50 hover:bg-brand-50 transition-all duration-200"
                   >
+                    <div className="w-2 h-2 rounded-full bg-orange-500 mr-2"></div>
                     Testnet
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/70 backdrop-blur">
-                <CardHeader>
-                  <CardTitle>Recent activity</CardTitle>
-                  <CardDescription>Placeholder events list</CardDescription>
+              <Card className="border-white/60 bg-white/90 shadow-xl backdrop-blur-xl hover:shadow-2xl transition-all duration-300">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-bold text-gray-900">Recent activity</CardTitle>
+                  <CardDescription className="text-gray-600">Latest transactions</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      Registered “Ode to Permanence”
-                    </span>
-                    <span className="text-xs text-muted-foreground">2m</span>
+                <CardContent className="space-y-4 text-sm">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-green-50 to-brand-50 border border-green-200/50">
+                    <span className="text-gray-700 font-medium">Registered "Ode to Permanence"</span>
+                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">2m</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      Verified content hash
-                    </span>
-                    <span className="text-xs text-muted-foreground">12m</span>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-blue-50 to-brand-50 border border-blue-200/50">
+                    <span className="text-gray-700 font-medium">Verified content hash</span>
+                    <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">12m</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      Switched network
-                    </span>
-                    <span className="text-xs text-muted-foreground">1h</span>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-gray-50 to-brand-50 border border-gray-200/50">
+                    <span className="text-gray-700 font-medium">Switched network</span>
+                    <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">1h</span>
                   </div>
                 </CardContent>
               </Card>
@@ -377,26 +430,18 @@ export default function DappPage() {
   );
 }
 
-function SideLink({
-  icon,
-  label,
-  active = false,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  active?: boolean;
-}) {
+function SideLink({ icon, label, active = false }: { icon: React.ReactNode; label: string; active?: boolean }) {
   return (
     <button
       type="button"
       className={[
-        "flex w-full items-center gap-2 rounded-md border px-3 py-2 text-sm transition",
+        "flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200",
         active
-          ? "border-brand-200 bg-brand-50 text-brand-800"
-          : "bg-white/70 hover:bg-brand-50/60",
+          ? "border-brand-300 bg-gradient-to-r from-brand-100 to-brand-200 text-brand-800 shadow-md"
+          : "border-white/60 bg-white/80 hover:bg-brand-50 hover:border-brand-200 shadow-sm hover:shadow-md",
       ].join(" ")}
     >
-      <span className="opacity-80">{icon}</span>
+      <span className={active ? "text-brand-600" : "text-gray-600"}>{icon}</span>
       <span>{label}</span>
     </button>
   );

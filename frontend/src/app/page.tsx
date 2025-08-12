@@ -1,56 +1,69 @@
 import type React from "react"
-import Image from "next/image"
-import Link from "next/link"
 import {
   PenTool,
   ShieldCheck,
   Clock,
-  LinkIcon,
   Search,
   ChevronRight,
-  BookOpenText,
   Users,
-  Stamp,
   FileSignature,
+  Zap,
+  Globe,
+  Lock,
+  ArrowRight,
+  CheckCircle,
+  Sparkles,
+  Hash,
+  Database,
+  Eye,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-
-
-
-
-
+import Link from "next/link"
 
 export default function Page() {
-
   return (
-    <main className="relative min-h-screen overflow-hidden bg-white">
-      {/* Global decorative background */}
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-brand-50/30">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        {/* soft radial glow in sea blue */}
-        <div className="absolute left-1/2 top-[-18rem] -z-10 h-[38rem] w-[78rem] -translate-x-1/2 rounded-full bg-gradient-to-tr from-brand-400/25 via-brand-300/20 to-brand-600/25 blur-3xl" />
-        {/* grid pattern with mask */}
-        <div className="absolute inset-0 [background:linear-gradient(to_right,rgba(2,132,199,0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(2,132,199,0.12)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(80%_60%_at_50%_20%,black,transparent)]" />
+        {/* Primary glow */}
+        <div className="absolute left-1/2 top-[-20rem] -z-10 h-[50rem] w-[90rem] -translate-x-1/2 rounded-full bg-gradient-to-tr from-brand-400/30 via-brand-300/25 to-brand-600/35 blur-3xl animate-pulse" />
+        {/* Secondary accent glow */}
+        <div className="absolute right-[-10rem] top-[20rem] -z-10 h-[30rem] w-[40rem] rounded-full bg-gradient-to-bl from-brand-200/40 to-brand-500/20 blur-2xl" />
+        {/* Animated grid */}
+        <div className="absolute inset-0 [background:linear-gradient(to_right,rgba(2,132,199,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(2,132,199,0.08)_1px,transparent_1px)] [background-size:60px_60px] [mask-image:radial-gradient(90%_70%_at_50%_30%,black,transparent)] animate-pulse" />
+        {/* Floating orbs */}
+        <div
+          className="absolute left-[10%] top-[60%] h-32 w-32 rounded-full bg-gradient-to-r from-brand-300/20 to-brand-500/20 blur-xl animate-bounce"
+          style={{ animationDelay: "2s", animationDuration: "4s" }}
+        />
+        <div
+          className="absolute right-[15%] top-[40%] h-24 w-24 rounded-full bg-gradient-to-r from-brand-400/15 to-brand-600/15 blur-lg animate-bounce"
+          style={{ animationDelay: "1s", animationDuration: "3s" }}
+        />
       </div>
 
       <Header />
       <Hero />
 
-      <section id="features" className="container mx-auto px-6 py-16 md:py-24">
+      <section id="features" className="relative container mx-auto px-6 py-20 md:py-32">
         <Features />
       </section>
 
-      <section id="how" className="container mx-auto px-6 py-16 md:py-24">
+      <section className="relative">
+        <InteractiveShowcase />
+      </section>
+
+      <section id="how" className="container mx-auto px-6 py-20 md:py-32">
         <HowItWorks />
       </section>
 
-      <section className="container mx-auto px-6 py-8">
+      <section className="container mx-auto px-6 py-12">
         <StatsStrip />
       </section>
 
-      <section id="faq" className="container mx-auto px-6 py-16 md:py-24">
+      <section id="faq" className="container mx-auto px-6 py-20 md:py-32">
         <FAQ />
       </section>
 
@@ -62,37 +75,53 @@ export default function Page() {
 
 function Header() {
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/50">
-      <div className="container mx-auto flex h-16 items-center justify-between px-6">
-        <a href="#" className="group flex items-center gap-2">
+    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
+      <div className="container mx-auto flex h-20 items-center justify-between px-6">
+        <a href="#" className="group flex items-center gap-3">
           <div className="relative">
-            <div className="absolute inset-0 rounded-md bg-gradient-to-br from-brand-500 to-brand-700 opacity-30 blur-sm transition group-hover:opacity-50" />
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-brand-500 to-brand-700 text-white">
-              <PenTool className="h-4 w-4" />
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 opacity-40 blur-lg transition-all duration-300 group-hover:opacity-60 group-hover:blur-xl" />
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 opacity-60 blur-sm transition-all duration-300 group-hover:opacity-80" />
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-lg">
+              <PenTool className="h-6 w-6" />
             </div>
           </div>
-          <span className="font-semibold tracking-tight">WriteStamp</span>
+          <div>
+            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-[#121F35] to-[#676f7e] bg-clip-text text-transparent">
+              WriteStamp
+            </span>
+            <div className="text-xs text-brand-600/70 font-medium">Blockchain Registry</div>
+          </div>
         </a>
-        <nav className="hidden md:flex items-center gap-6 text-sm">
-          <a href="#features" className="text-muted-foreground transition hover:text-foreground">
+
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a
+            href="#features"
+            className="text-slate-600 transition-all duration-200 hover:text-brand-700 hover:scale-105"
+          >
             Features
           </a>
-          <a href="#how" className="text-muted-foreground transition hover:text-foreground">
+          <a href="#how" className="text-slate-600 transition-all duration-200 hover:text-brand-700 hover:scale-105">
             How it works
           </a>
-          <a href="#faq" className="text-muted-foreground transition hover:text-foreground">
+          <a href="#faq" className="text-slate-600 transition-all duration-200 hover:text-brand-700 hover:scale-105">
             FAQ
           </a>
         </nav>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" className="hidden sm:inline-flex bg-white/70 backdrop-blur">
-            Docs
+
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            className="hidden sm:inline-flex bg-white/80 backdrop-blur border-brand-200 hover:bg-brand-50 hover:border-brand-300 transition-all duration-200"
+          >
+            Documentation
           </Button>
-          {/* Default button uses primary tokens which we set to sea blue */}
-         <Button asChild>
+          <Button
+            asChild
+            className="bg-gradient-to-r from-[#121F35] to-[#121F35] hover:from-brand-700 hover:to-brand-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+          >
             <Link href="/dapp">
               Launch App
-              <ChevronRight className="ml-1.5 h-4 w-4" />
+              <ChevronRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>
@@ -103,59 +132,113 @@ function Header() {
 
 function Hero() {
   return (
-    <section className="container mx-auto grid items-center gap-10 px-6 py-16 md:py-24 lg:grid-cols-2">
-      <div className="relative">
-        <div className="inline-flex items-center gap-2 rounded-full border bg-white/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-          <ShieldCheck className="h-3.5 w-3.5 text-brand-600" />
-          Blockchain-based notary for writers
-        </div>
-        <h1 className="mt-4 text-4xl font-bold leading-tight tracking-tight md:text-5xl">
-          Permanent, tamper-proof proof that{" "}
-          <span className="bg-gradient-to-r from-brand-600 to-brand-400 bg-clip-text text-transparent">
-            you wrote it
-          </span>
-        </h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          Register a keccak256 hash of your writing on-chain, timestamp it, and optionally link to where the content
-          lives. Share nothing but the hash—your words remain private unless you choose to reveal them.
-        </p>
+    <section className="relative container mx-auto px-6 py-20 md:py-32">
+      <div className="grid items-center gap-16 lg:grid-cols-2">
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-3 rounded-full border border-brand-200/50 bg-white/80 px-4 py-2 text-sm text-brand-700 backdrop-blur-sm shadow-sm animate-fade-in">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-r from-brand-500 to-brand-600">
+              <ShieldCheck className="h-3.5 w-3.5 text-white" />
+            </div>
+            <span className="font-medium">Blockchain-powered authorship proof</span>
+            <Sparkles className="h-4 w-4 text-brand-500" />
+          </div>
 
-        <div className="mt-6 flex flex-wrap gap-3">
-          <a href="#features">
-            <Button>
-              Get started
-              <ChevronRight className="ml-1.5 h-4 w-4" />
+          <h1 className="mt-8 text-5xl font-black leading-[1.1] tracking-tight md:text-7xl lg:text-8xl">
+            <span className="block">Your words,</span>
+            <span className="block bg-gradient-to-r from-[#121F35] to-[#676f7e] bg-clip-text text-transparent">
+              forever proven
+            </span>
+          </h1>
+
+          <p className="mt-8 text-xl leading-relaxed text-slate-600 md:text-2xl">
+            The first <span className="font-semibold text-brand-700">privacy-first</span> blockchain registry for
+            writers. Prove authorship without revealing content. Timestamp creation. Own your intellectual property.
+          </p>
+
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-6">
+            <Button
+              asChild
+              size="lg"
+              className="group  bg-gradient-to-r from-[#121F35] to-[#121F35] hover:from-brand-700 hover:to-brand-800 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 text-lg px-8 py-6"
+            >
+              <Link href="/dapp">
+                Start protecting your work
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
-          </a>
-          <a href="#how">
-            <Button variant="outline" className="bg-white/60 backdrop-blur">
-              Learn more
+            <Button
+              variant="outline"
+              size="lg"
+              className="group bg-white/80 backdrop-blur border-brand-200 hover:bg-brand-50 hover:border-brand-300 text-brand-700 hover:text-brand-800 transition-all duration-300 hover:scale-105 text-lg px-8 py-6"
+            >
+              <a href="#how" className="flex items-center">
+                See how it works
+                <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </a>
             </Button>
-          </a>
+          </div>
+
+          <div className="mt-12 flex flex-wrap gap-4">
+            <FeatureChip icon={<Lock className="h-4 w-4" />} label="Privacy-first" />
+            <FeatureChip icon={<Clock className="h-4 w-4" />} label="Immutable timestamps" />
+            <FeatureChip icon={<Globe className="h-4 w-4" />} label="Globally verifiable" />
+            <FeatureChip icon={<Zap className="h-4 w-4" />} label="Instant proof" />
+          </div>
+
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-          <FeatureChip icon={<ShieldCheck className="h-4 w-4 text-brand-600" />} label="Immutable timestamps" />
-          <FeatureChip icon={<BookOpenText className="h-4 w-4 text-brand-600" />} label="Privacy-first by design" />
-          <FeatureChip icon={<FileSignature className="h-4 w-4 text-brand-600" />} label="Author-owned proofs" />
+        <div className="relative">
+          {/* Multiple layered glows */}
+          <div className="absolute -inset-8 -z-10 rounded-3xl bg-gradient-to-tr from-[#121F35]/30 to-[#121F35]/30 blur-3xl animate-pulse" />
+          <div className="absolute -inset-4 -z-10 rounded-2xl bg-gradient-to-br from-[#121F35]/20 to-[#121F35]/20 blur-xl" />
+
+          {/* Main card with enhanced styling */}
+          <Card className="relative overflow-hidden border-0 bg-black shadow-2xl backdrop-blur-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#121F35]/50 via-white/50 to-[#121F35]/50" />
+            <div className="absolute inset-0 bg-[radial-gradient(1000px_400px_at_50%_20%,rgba(2,132,199,0.08),transparent)]" />
+
+            {/* Floating elements inside the card */}
+            <div className="relative p-8">
+              <div className="space-y-6">
+                {/* Hash visualization */}
+                <div className="flex items-center gap-4 rounded-xl bg-slate-50/80 p-4 backdrop-blur">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-600 text-white">
+                    <Hash className="h-6 w-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-slate-700">Content Hash</div>
+                    <div className="font-mono text-xs text-brand-600">0x4f2a8b9c...</div>
+                  </div>
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                </div>
+
+                {/* Blockchain visualization */}
+                <div className="flex items-center gap-4 rounded-xl bg-slate-50/80 p-4 backdrop-blur">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-600 text-white">
+                    <Database className="h-6 w-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-slate-700">Blockchain Record</div>
+                    <div className="text-xs text-slate-500">Block #18,234,567</div>
+                  </div>
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                </div>
+
+                {/* Privacy visualization */}
+                <div className="flex items-center gap-4 rounded-xl bg-slate-50/80 p-4 backdrop-blur">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-600 text-white">
+                    <Eye className="h-6 w-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-slate-700">Content Privacy</div>
+                    <div className="text-xs text-slate-500">Your words stay private</div>
+                  </div>
+                  <Lock className="h-5 w-5 text-brand-600" />
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
-
-        <LogosStrip />
-      </div>
-
-      <div className="relative">
-        <div className="absolute -inset-6 -z-10 rounded-3xl bg-gradient-to-tr from-brand-400/20 to-brand-700/20 blur-2xl" />
-        <Card className="relative overflow-hidden border bg-white/70 shadow-xl backdrop-blur">
-          <div className="absolute inset-0 bg-[radial-gradient(1000px_300px_at_50%_10%,rgba(2,132,199,0.12),transparent)]" />
-          <Image
-            src="/placeholder.svg?height=640&width=960"
-            alt="Abstract illustration of a blockchain-backed writing registry"
-            width={960}
-            height={640}
-            className="h-full w-full object-cover"
-            priority
-          />
-        </Card>
       </div>
     </section>
   )
@@ -163,106 +246,195 @@ function Hero() {
 
 function FeatureChip({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border bg-white/70 px-3 py-1 backdrop-blur">
-      {icon}
+    <div className="inline-flex items-center gap-2 rounded-full border border-brand-200/50 bg-white/80 px-4 py-2 text-sm font-medium text-brand-700 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-brand-50 hover:scale-105">
+      <div className="text-brand-600">{icon}</div>
       <span>{label}</span>
     </div>
   )
 }
 
-function LogosStrip() {
-  return (
-    <div className="mt-10">
-      <p className="text-xs uppercase tracking-wider text-muted-foreground">Trusted by builders and creators</p>
-      <div className="mt-4 grid grid-cols-3 items-center gap-6 opacity-70 sm:grid-cols-5">
-        {["press", "studio", "scribe", "ledger", "ipfs"].map((name) => (
-          <div key={name} className="flex items-center justify-center">
-            <Image
-              src={`/placeholder.svg?height=28&width=100&query=${encodeURIComponent(`${name} logo grayscale`)}`}
-              alt={`${name} logo`}
-              width={100}
-              height={28}
-              className="h-7 w-auto object-contain"
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
+
 
 function Features() {
   const items = [
     {
-      icon: <ShieldCheck className="h-5 w-5 text-brand-600" />,
-      title: "Prove authorship",
-      desc: "Register the keccak256 hash of your content on-chain to prove ownership without revealing the text.",
+      icon: <ShieldCheck className="h-6 w-6" />,
+      title: "Cryptographic Proof",
+      desc: "Register keccak256 hashes on-chain for mathematically verifiable authorship without revealing content.",
+      color: "from-green-500 to-emerald-600",
     },
     {
-      icon: <Clock className="h-5 w-5 text-brand-600" />,
-      title: "Immutable timestamps",
-      desc: "Every registration is anchored with a block timestamp for verifiable creation time.",
+      icon: <Clock className="h-6 w-6" />,
+      title: "Immutable Timestamps",
+      desc: "Every registration is anchored with blockchain timestamps, creating permanent proof of creation time.",
+      color: "from-blue-500 to-brand-600",
     },
     {
-      icon: <LinkIcon className="h-5 w-5 text-brand-600" />,
-      title: "Optional metadata",
-      desc: "Attach a title and a URI (IPFS, website) where readers can find the work if you choose.",
+      icon: <Lock className="h-6 w-6" />,
+      title: "Privacy by Design",
+      desc: "Your content remains completely private. Only you decide if and when to reveal the original text.",
+      color: "from-purple-500 to-violet-600",
     },
     {
-      icon: <Search className="h-5 w-5 text-brand-600" />,
-      title: "Public verification",
-      desc: "Anyone can check a work’s registration status by its content hash.",
+      icon: <Search className="h-6 w-6" />,
+      title: "Global Verification",
+      desc: "Anyone can verify authorship by comparing content hashes against the public blockchain record.",
+      color: "from-orange-500 to-red-600",
     },
     {
-      icon: <Users className="h-5 w-5 text-brand-600" />,
-      title: "Author registry",
-      desc: "Browse all submissions by a specific wallet address.",
+      icon: <Users className="h-6 w-6" />,
+      title: "Author Portfolio",
+      desc: "Build a verifiable portfolio of all your registered works, searchable by wallet address.",
+      color: "from-teal-500 to-cyan-600",
     },
     {
-      icon: <Stamp className="h-5 w-5 text-brand-600" />,
-      title: "Portable proofs",
-      desc: "Your registration is a public good—verifiable across explorers and tools.",
+      icon: <Globe className="h-6 w-6" />,
+      title: "Universal Access",
+      desc: "Your proofs work across any blockchain explorer, wallet, or verification tool in the ecosystem.",
+      color: "from-indigo-500 to-blue-600",
     },
   ]
 
   return (
     <div>
-      <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">What you can do</h2>
-        <p className="mt-2 text-muted-foreground">
-          Everything you need for cryptographic authorship proof—private by default, open to verify.
+      <div className="mx-auto max-w-3xl text-center">
+        <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+          <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            Everything you need to
+          </span>
+          <br />
+          <span className="bg-gradient-to-r from-[#121F35] to-[#676f7e] bg-clip-text text-transparent">
+            protect your work
+          </span>
+        </h2>
+        <p className="mt-6 text-xl text-slate-600">
+          Professional-grade authorship protection with privacy-first design and global verification.
         </p>
       </div>
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((f) => (
-          <GlassCard key={f.title} title={f.title} desc={f.desc} icon={f.icon} />
+      <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((f, index) => (
+          <EnhancedFeatureCard key={f.title} {...f} index={index} />
         ))}
       </div>
     </div>
   )
 }
 
-function GlassCard({
+function EnhancedFeatureCard({
   title,
   desc,
   icon,
+  color,
+  index,
 }: {
   title: string
   desc: string
   icon: React.ReactNode
+  color: string
+  index: number
 }) {
   return (
-    <Card className="group relative overflow-hidden border bg-white/70 shadow-sm transition hover:shadow-xl backdrop-blur">
-      <div className="pointer-events-none absolute inset-0 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100">
-        <div className="absolute -inset-1 bg-gradient-to-br from-brand-400/20 via-transparent to-brand-700/20" />
-      </div>
-      <CardHeader className="relative flex-row items-start gap-3 space-y-0">
-        <div className="rounded-md border bg-white/80 p-2 backdrop-blur">{icon}</div>
-        <div>
-          <CardTitle className="text-base">{title}</CardTitle>
-          <CardDescription>{desc}</CardDescription>
+    <Card className="group relative overflow-hidden border-0 bg-white/80 shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:scale-105">
+      {/* Animated background gradient */}
+      <div
+        className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-gradient-to-br ${color} blur-3xl`}
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-white/90 to-white/70 backdrop-blur" />
+
+      <CardHeader className="relative space-y-4 p-8">
+        <div
+          className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg`}
+        >
+          {icon}
         </div>
+        <div>
+          <CardTitle className="text-xl font-bold text-slate-900">{title}</CardTitle>
+          <CardDescription className="mt-3 text-base leading-relaxed text-slate-600">{desc}</CardDescription>
+        </div>
+
+        {/* Progress indicator */}
+        <div className="mt-6 flex items-center gap-2">
+          <div className={`h-1 w-12 rounded-full bg-gradient-to-r ${color}`} />
+          <div className="text-xs font-medium text-slate-400">0{index + 1}</div>
+        </div>
+      </CardHeader>
+    </Card>
+  )
+}
+
+function InteractiveShowcase() {
+  return (
+    <section className="relative py-20 md:py-32">
+      {/* Background with enhanced styling */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-brand-900" />
+      <div className="absolute inset-0 bg-[radial-gradient(1000px_600px_at_50%_50%,rgba(2,132,199,0.15),transparent)]" />
+
+      <div className="container relative mx-auto px-6">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="text-4xl font-black tracking-tight text-white md:text-6xl">See it in action</h2>
+          <p className="mt-6 text-xl text-slate-300">
+            Watch how your content gets transformed into an immutable proof of authorship
+          </p>
+        </div>
+
+        {/* Interactive demo visualization */}
+        <div className="mt-16 grid gap-8 lg:grid-cols-3">
+          <DemoStep
+            step={1}
+            title="Your Content"
+            desc="Write your masterpiece"
+            icon={<PenTool className="h-8 w-8" />}
+            content="The quick brown fox jumps over the lazy dog..."
+          />
+          <DemoStep
+            step={2}
+            title="Hash Generation"
+            desc="Cryptographic fingerprint"
+            icon={<Hash className="h-8 w-8" />}
+            content="0x4f2a8b9c7d1e3f4a..."
+          />
+          <DemoStep
+            step={3}
+            title="Blockchain Record"
+            desc="Permanent proof created"
+            icon={<Database className="h-8 w-8" />}
+            content="Block #18,234,567"
+          />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function DemoStep({
+  step,
+  title,
+  desc,
+  icon,
+  content,
+}: {
+  step: number
+  title: string
+  desc: string
+  icon: React.ReactNode
+  content: string
+}) {
+  return (
+    <Card className="relative overflow-hidden border-slate-700 bg-slate-800/50 backdrop-blur">
+      <CardHeader className="p-8">
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#121F35] to-[#676f7e] text-white">
+            {icon}
+          </div>
+          <div>
+            <Badge className="mb-2 bg-brand-600 text-white">Step {step}</Badge>
+            <CardTitle className="text-white">{title}</CardTitle>
+            <CardDescription className="text-slate-400">{desc}</CardDescription>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-lg bg-slate-900/50 p-4 font-mono text-sm text-slate-300">{content}</div>
       </CardHeader>
     </Card>
   )
@@ -272,45 +444,57 @@ function HowItWorks() {
   const steps = [
     {
       step: 1,
-      title: "Hash your text",
-      desc: "Compute keccak256(content) client-side. Only the hash is sent on-chain, keeping your words private.",
+      title: "Hash your content",
+      desc: "Generate a keccak256 hash of your text client-side. Your original content never leaves your device.",
+      icon: <Hash className="h-8 w-8" />,
     },
     {
       step: 2,
       title: "Register on-chain",
-      desc: "Submit the hash with optional metadata. The transaction records a permanent timestamp.",
+      desc: "Submit the hash with optional metadata to the blockchain. Transaction creates permanent timestamp.",
+      icon: <Database className="h-8 w-8" />,
     },
     {
       step: 3,
       title: "Verify anytime",
-      desc: "Recompute the hash later and compare it to the on-chain record to verify authorship and time.",
+      desc: "Anyone can verify authorship by recomputing the hash and comparing to the blockchain record.",
+      icon: <CheckCircle className="h-8 w-8" />,
     },
   ]
+
   return (
     <div>
-      <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">How it works</h2>
-        <p className="mt-2 text-muted-foreground">Simple, privacy-preserving, and verifiable.</p>
+      <div className="mx-auto max-w-3xl text-center">
+        <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+          <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            How it works
+          </span>
+        </h2>
+        <p className="mt-6 text-xl text-slate-600">Three simple steps to permanent, verifiable authorship proof</p>
       </div>
 
-      <div className="relative mx-auto mt-10 grid gap-6 md:grid-cols-3">
-        {/* connecting line for desktop */}
-        <div className="pointer-events-none absolute left-1/2 top-1/2 hidden h-0.5 w-full -translate-y-1/2 -translate-x-1/2 bg-gradient-to-r from-brand-400/30 via-brand-500/30 to-brand-700/30 md:block" />
-        {steps.map((s) => (
-          <Card
-            key={s.step}
-            className="relative overflow-hidden border bg-white/70 transition hover:shadow-lg backdrop-blur"
-          >
-            <CardHeader>
-              <Badge className="w-fit bg-brand-600 hover:bg-brand-600 text-white">Step {s.step}</Badge>
-              <CardTitle className="mt-2 text-lg">{s.title}</CardTitle>
-              <CardDescription>{s.desc}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mt-2 h-1 w-20 rounded-full bg-gradient-to-r from-brand-600 to-brand-400" />
-            </CardContent>
-          </Card>
-        ))}
+      <div className="relative mx-auto mt-16 max-w-5xl">
+        {/* Connecting line */}
+        <div className="absolute left-1/2 top-1/2 hidden h-1 w-full -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600 md:block" />
+
+        <div className="grid gap-8 md:grid-cols-3">
+          {steps.map((s) => (
+            <Card
+              key={s.step}
+              className="relative overflow-hidden border-0 bg-white/80 shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:scale-105"
+            >
+              <div className="absolute inset-0 bg-gradient-to" />
+              <CardHeader className="relative p-8 text-center">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#121F35] to-[#676f7e] text-white shadow-lg">
+                  {s.icon}
+                </div>
+                <Badge className="mb-4 bg-brand-600 text-black">Step {s.step}</Badge>
+                <CardTitle className="text-xl font-bold text-slate-900">{s.title}</CardTitle>
+                <CardDescription className="mt-3 text-base leading-relaxed text-slate-600">{s.desc}</CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -318,18 +502,23 @@ function HowItWorks() {
 
 function StatsStrip() {
   const stats = [
-    { label: "Registered works", value: "12,384" },
-    { label: "Authors", value: "5,172" },
-    { label: "Avg. cost per proof", value: "~$0.02" },
+    { label: "Registered Works", value: "47,382", icon: <FileSignature className="h-6 w-6" /> },
+    { label: "Active Authors", value: "12,847", icon: <Users className="h-6 w-6" /> },
+    { label: "Avg. Gas Cost", value: "~$0.03", icon: <Zap className="h-6 w-6" /> },
+    { label: "Networks Supported", value: "8+", icon: <Globe className="h-6 w-6" /> },
   ]
+
   return (
-    <div className="relative overflow-hidden rounded-2xl border bg-white/70 p-6 backdrop-blur">
-      <div className="pointer-events-none absolute -inset-1 bg-[radial-gradient(600px_120px_at_30%_0%,rgba(14,165,233,0.18),transparent),radial-gradient(600px_120px_at_70%_0%,rgba(2,132,199,0.18),transparent)]" />
-      <div className="relative grid gap-6 text-center sm:grid-cols-3">
+    <div className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-r from-[#121F35] to-[#676f7e] p-8 shadow-2xl md:p-12">
+      <div className="absolute inset-0 bg-[radial-gradient(1000px_300px_at_50%_50%,rgba(255,255,255,0.1),transparent)]" />
+      <div className="relative grid gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label}>
-            <div className="text-2xl font-semibold tracking-tight">{s.value}</div>
-            <div className="mt-1 text-sm text-muted-foreground">{s.label}</div>
+          <div key={s.label} className="group">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 text-white backdrop-blur transition-all duration-300 group-hover:bg-white/30 group-hover:scale-110">
+              {s.icon}
+            </div>
+            <div className="text-3xl font-black text-white md:text-4xl">{s.value}</div>
+            <div className="mt-2 text-sm font-medium text-white">{s.label}</div>
           </div>
         ))}
       </div>
@@ -341,33 +530,48 @@ function FAQ() {
   const items = [
     {
       q: "Do I have to reveal my writing to register?",
-      a: "No. You register only the keccak256 hash of the text. The original content stays private unless you choose to publish it.",
+      a: "Absolutely not. You only register the keccak256 hash of your content. The original text stays completely private unless you choose to publish it elsewhere.",
     },
     {
-      q: "Why keccak256?",
-      a: "keccak256 is the hashing function used broadly in Ethereum ecosystems, providing a deterministic fingerprint of your content.",
+      q: "Why use keccak256 instead of other hash functions?",
+      a: "keccak256 is the standard hashing function in Ethereum and most blockchain ecosystems, ensuring maximum compatibility and verification across tools.",
     },
     {
-      q: "How do people verify authorship later?",
-      a: "They recompute the hash from the original text and compare it to the on-chain record. If it matches, authorship and timestamp are verified.",
+      q: "How do people verify my authorship later?",
+      a: "They recompute the keccak256 hash from your original text and compare it to the on-chain record. If it matches, authorship and timestamp are cryptographically verified.",
     },
     {
-      q: "What if I edit my work?",
-      a: "Any change results in a different hash. You can register new versions, each with its own timestamp and optional metadata.",
+      q: "What happens if I edit my work?",
+      a: "Any change, even a single character, results in a completely different hash. You can register new versions separately, each with its own timestamp and metadata.",
     },
     {
-      q: "Which networks are supported?",
-      a: "Any EVM-compatible chain can be supported. Mainnet, L2s, or testnets depending on your needs and budget.",
+      q: "Which blockchain networks are supported?",
+      a: "Any EVM-compatible chain works: Ethereum mainnet, Polygon, Arbitrum, Optimism, and many L2s. Choose based on your cost and speed preferences.",
+    },
+    {
+      q: "Can I add metadata to my registration?",
+      a: "Yes! You can optionally include a title and URI (like an IPFS link or website) where people can find your published work if you choose to share it.",
     },
   ]
+
   return (
-    <div className="mx-auto max-w-3xl">
-      <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Frequently asked questions</h2>
-      <Accordion type="single" collapsible className="mt-6">
+    <div className="mx-auto max-w-4xl">
+      <div className="text-center">
+        <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+          <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            Frequently asked questions
+          </span>
+        </h2>
+        <p className="mt-6 text-xl text-slate-600">Everything you need to know about blockchain authorship proof</p>
+      </div>
+
+      <Accordion type="single" collapsible className="mt-12">
         {items.map((it, idx) => (
-          <AccordionItem key={it.q} value={`item-${idx + 1}`}>
-            <AccordionTrigger className="text-left">{it.q}</AccordionTrigger>
-            <AccordionContent className="text-muted-foreground">{it.a}</AccordionContent>
+          <AccordionItem key={it.q} value={`item-${idx + 1}`} className="border-slate-200">
+            <AccordionTrigger className="text-left text-lg font-semibold text-slate-900 hover:text-brand-700">
+              {it.q}
+            </AccordionTrigger>
+            <AccordionContent className="text-base leading-relaxed text-slate-600">{it.a}</AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
@@ -377,21 +581,65 @@ function FAQ() {
 
 function CalloutCta() {
   return (
-    <section className="relative mx-auto my-16 max-w-5xl px-6">
-      <div className="relative overflow-hidden rounded-3xl border bg-white/70 p-8 shadow-xl backdrop-blur md:p-10">
-        <div className="pointer-events-none absolute -inset-1 bg-[conic-gradient(from_180deg_at_50%_50%,rgba(14,165,233,0.16),rgba(2,132,199,0.16),transparent_70%)] blur-3xl" />
-        <div className="relative grid items-center gap-6 md:grid-cols-3">
-          <div className="md:col-span-2">
-            <h3 className="text-2xl font-semibold tracking-tight">Start protecting your words today</h3>
-            <p className="mt-2 text-muted-foreground">
-              Timestamp your authorship on-chain—private by default, verifiable forever.
+    <section className="relative mx-auto my-20 max-w-6xl px-6">
+      <div className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-slate-900 via-slate-800 to-brand-900 p-12 shadow-2xl md:p-16">
+        {/* Enhanced background effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(1000px_400px_at_30%_20%,rgba(2,132,199,0.2),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(800px_300px_at_70%_80%,rgba(14,165,233,0.15),transparent)]" />
+
+        <div className="relative grid items-center gap-8 lg:grid-cols-2">
+          <div>
+            <h3 className="text-4xl font-black text-white md:text-5xl">Ready to protect your intellectual property?</h3>
+            <p className="mt-6 text-xl leading-relaxed text-slate-300">
+              Join thousands of writers who trust blockchain technology to secure their authorship. Start with your
+              first registration today.
             </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <Button
+                asChild
+                size="lg"
+                className="group bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 text-lg px-8 py-6"
+              >
+                <Link href="/app">
+                  Launch WriteStamp
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:text-white backdrop-blur text-lg px-8 py-6"
+              >
+                View Documentation
+              </Button>
+            </div>
           </div>
-          <div className="flex md:justify-end">
-            <Button className="w-full bg-gradient-to-r from-brand-700 to-brand-500 text-white hover:opacity-90 md:w-auto">
-              Launch App
-              <ChevronRight className="ml-1.5 h-4 w-4" />
-            </Button>
+
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-r from-brand-400/20 to-brand-600/20 blur-xl" />
+            <Card className="relative border-slate-700 bg-slate-800/50 backdrop-blur">
+              <CardContent className="p-8">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                    <span className="text-slate-300">Instant registration</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                    <span className="text-slate-300">Global verification</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                    <span className="text-slate-300">Privacy guaranteed</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                    <span className="text-slate-300">Permanent ownership</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -401,24 +649,91 @@ function CalloutCta() {
 
 function Footer() {
   return (
-    <footer className="border-t bg-white">
-      <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-6 py-10 text-sm md:flex-row">
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <PenTool className="h-4 w-4" />
-          <span>WriteStamp</span>
-          <span className="text-muted-foreground/60">·</span>
-          <span>© {new Date().getFullYear()}</span>
+    <footer className="border-t border-slate-200 bg-white">
+      <div className="container mx-auto px-6 py-16">
+        <div className="grid gap-8 md:grid-cols-4">
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white">
+                <PenTool className="h-6 w-6" />
+              </div>
+              <div>
+                <span className="text-xl font-bold text-slate-900">WriteStamp</span>
+                <div className="text-sm text-slate-600">Blockchain Registry</div>
+              </div>
+            </div>
+            <p className="mt-4 text-slate-600 max-w-md">
+              The first privacy-first blockchain registry for writers. Prove authorship, protect intellectual property,
+              and timestamp your creative work forever.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-slate-900">Product</h4>
+            <ul className="mt-4 space-y-2 text-sm text-slate-600">
+              <li>
+                <a href="#features" className="hover:text-brand-700 transition-colors">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="#how" className="hover:text-brand-700 transition-colors">
+                  How it works
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-brand-700 transition-colors">
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-brand-700 transition-colors">
+                  API
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-slate-900">Support</h4>
+            <ul className="mt-4 space-y-2 text-sm text-slate-600">
+              <li>
+                <a href="#" className="hover:text-brand-700 transition-colors">
+                  Documentation
+                </a>
+              </li>
+              <li>
+                <a href="#faq" className="hover:text-brand-700 transition-colors">
+                  FAQ
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-brand-700 transition-colors">
+                  Contact
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-brand-700 transition-colors">
+                  Status
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div className="flex items-center gap-4 text-muted-foreground">
-          <a href="#" className="transition hover:text-foreground">
-            Terms
-          </a>
-          <a href="#" className="transition hover:text-foreground">
-            Privacy
-          </a>
-          <a href="#" className="transition hover:text-foreground">
-            Contact
-          </a>
+
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-8 md:flex-row">
+          <div className="text-sm text-slate-600">© {new Date().getFullYear()} WriteStamp. All rights reserved.</div>
+          <div className="flex items-center gap-6 text-sm text-slate-600">
+            <a href="#" className="hover:text-brand-700 transition-colors">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-brand-700 transition-colors">
+              Terms of Service
+            </a>
+            <a href="#" className="hover:text-brand-700 transition-colors">
+              Cookie Policy
+            </a>
+          </div>
         </div>
       </div>
     </footer>
