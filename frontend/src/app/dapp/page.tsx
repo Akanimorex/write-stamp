@@ -3,11 +3,7 @@ import React from "react";
 
 type ContractResult = [string[], string[], number[]];
 
-interface QueryResult {
-  data: ContractResult | undefined;
-  isLoading: boolean;
-  error: unknown;
-}
+
 
 import {
   Card,
@@ -21,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  PenTool,
   Search,
   Users,
   SettingsIcon,
@@ -35,12 +30,11 @@ import {
 } from "lucide-react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { keccak256, toUtf8Bytes } from "ethers";
 import { abi } from "@/abi/abi";
 import {
   CampModal,
-  useModal as useCampModal,
   useConnect,
 } from "@campnetwork/origin/react";
 import { useWriteContract, useReadContract } from "wagmi";
@@ -59,18 +53,14 @@ export default function DappPage() {
   const [copied, setCopied] = useState(false);
   const [checkHash, setCheckHash] = useState("");
 
-  const { openModal: openCampModal } = useCampModal();
-  const { disconnect } = useConnect();
   const { address, isConnected } = useAccount();
   const { isAuthenticated } = useAuth();
   const contractAddress = "0x843E3ffaf094294a520690cBe4dD5aC123851b92";
 
-  const { writeContractAsync, isPending, error } = useWriteContract();
+  const { writeContractAsync, isPending } = useWriteContract();
 
   const {
     data: submissions,
-    isLoading,
-    error: readError,
   } = useReadContract({
     address: contractAddress,
     abi: abi,
@@ -81,8 +71,6 @@ export default function DappPage() {
     },
   }) as {
     data: ContractResult | undefined;
-    isLoading: boolean;
-    error: unknown;
   };
 
   console.log("Submissions:", submissions);
@@ -140,7 +128,7 @@ export default function DappPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const { data: isRegistered, refetch: refetchHashStatus } = useReadContract({
+  const { refetch: refetchHashStatus } = useReadContract({
     address: contractAddress,
     abi: abi,
     functionName: "checkIfRegistered",
