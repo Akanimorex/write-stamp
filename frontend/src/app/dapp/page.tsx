@@ -35,7 +35,6 @@ import { keccak256, toUtf8Bytes } from "ethers";
 import { abi } from "@/abi/abi";
 import {
   CampModal,
-  useConnect,
 } from "@campnetwork/origin/react";
 import { useWriteContract, useReadContract } from "wagmi";
 import { ToastContainer, toast } from "react-toastify";
