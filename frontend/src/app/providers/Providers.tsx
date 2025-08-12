@@ -8,7 +8,7 @@ import {
   getDefaultConfig,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
-import { WagmiProvider, useChainId, useSwitchChain } from 'wagmi';
+import { WagmiProvider, useChainId } from 'wagmi';
 import {
   basecampTestnet,
 } from 'wagmi/chains';
@@ -30,7 +30,6 @@ const queryClient = new QueryClient();
 
 const ChainGuard = ()=>{
   const chainId = useChainId();
-  const {switchChain} = useSwitchChain();
   useEffect(() => {
     if (chainId !== basecampTestnet.id) {
       alert(`Please switch to Basecamp Testnet to use this dApp.`);  }
