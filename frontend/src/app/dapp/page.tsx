@@ -346,7 +346,7 @@ export default function DappPage() {
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <Input
                         placeholder="Generated hash will appear here"
-                        className="border-brand-200/50 bg-brand-50/50 text-xs font-mono"
+                        className="border-none focus:border-none focus:outline-none focus:ring-0 focus:ring-offset-0 bg-brand-50/50 text-xs font-mono bg-gray-300"
                         value={hash}
                         readOnly
                       />
