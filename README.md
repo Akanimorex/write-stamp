@@ -33,7 +33,7 @@ It uses a **content hash** to store immutable proof of authorship without reveal
 - **Blockchain Interaction:** Wagmi + Viem
 - **Authentication:** Origin SDK
 - **Smart Contract Language:** Solidity
-- **Blockchain Network:** EVM-compatible chain
+- **Blockchain Network:** Basecamp Testnet
 
 ---
 
